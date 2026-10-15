@@ -9,31 +9,51 @@ const esc=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':
 const presets={wine:{bg:'#0d0b10',accent:'#cf3854',text:'#f8eaf0',surface:'#22141d',secondary:'#a4919e'},ocean:{bg:'#071529',accent:'#0ab6ed',text:'#f0f9ff',surface:'#132c4b',secondary:'#a1bcd7'},light:{bg:'#f5f2f3',accent:'#c72c4e',text:'#221823',surface:'#ffffff',secondary:'#7d6878'}};
 const mk=(type,name,x,y,w,h,extras={})=>({id:ID(),type,name,x,y,w,h,text:'',color:'#f6eaf0',bg:'#25151e',fontSize:15,fontWeight:600,fontFamily:'system',radius:13,shadow:0,blur:0,opacity:100,border:0,borderColor:'#8e3b4e',align:'left',visible:true,locked:false,on:false,...extras});
 const initModel=()=>{
-  const t=deep(presets.wine);
-  const heading=(name,text,y)=>mk('text',name,22,y,330,32,{text,fontSize:23,fontWeight:800});
-  const sub=(text,y)=>mk('text','Descrição',22,y,330,27,{text,fontSize:12,color:'#a897a5',fontWeight:400});
-  const card=(name,text,y,on=false)=>[
-    mk('card','Cartão • '+name,17,y,340,72,{bg:'#231820',radius:15,border:1,borderColor:'#563241'}),
-    mk('text','Nome • '+name,34,y+13,238,23,{text,fontSize:14,fontWeight:700}),
-    mk('text','Descrição • '+name,34,y+38,230,19,{text:'Toque para configurar',fontSize:10,fontWeight:400,color:'#a08c99'}),
-    mk('switch','Switch • '+name,290,y+22,44,27,{on,bg:'#cf3854'})
+  // Modelo visual inspirado nos componentes reais de ContentView.swift 2.0.7.
+  // Elementos com nativeRole alimentam o tema aplicado no app iOS.
+  const t={bg:'#07070a',accent:'#f20e29',text:'#ffffff',surface:'#131318',secondary:'#a3a3ad'};
+  const text=(name,label,x,y,w,h,extras={})=>mk('text',name,x,y,w,h,{text:label,color:t.text,fontSize:13,fontWeight:600,...extras});
+  const card=(name,y,description)=>[
+    mk('card','Cartão do patch',106,y,252,89,{nativeRole:'patchCard',bg:t.surface,radius:16,border:1,borderColor:'#322932'}),
+    text('Nome do patch',name,146,y+13,150,23,{nativeRole:'patchTitle',fontSize:13,fontWeight:700}),
+    text('Descrição do patch',description,146,y+38,150,36,{nativeRole:'patchDescription',fontSize:10,fontWeight:400,color:t.secondary}),
+    mk('switch','Ativar patch',309,y+28,44,27,{nativeRole:'patchSwitch',bg:t.accent})
   ];
-  return {version:1,title:'Satanabe External',theme:t,pages:[
-    {id:'ranked',name:'Rankeada',icon:'✦',elements:[
-      mk('text','Marca',22,19,330,21,{text:'S A T A N A B E',fontSize:11,color:'#ed7188',fontWeight:800}),
-      mk('text','Cabeçalho',21,56,332,48,{text:'RANKEADA',fontSize:31,fontWeight:900}),
-      sub('Personalize sua experiência',108),
-      mk('card','Resumo',17,156,340,84,{bg:'#351825',radius:17,border:1,borderColor:'#743047'}),
-      mk('icon','Ícone do resumo',32,180,30,35,{text:'✧',fontSize:28,color:'#f26e8b'}),
-      mk('text','Título resumo',73,174,261,29,{text:'Painel de ajustes',fontSize:16,fontWeight:800}),
-      mk('text','Subtítulo resumo',73,202,257,20,{text:'Configurações da partida',fontSize:11,color:'#c49aa9',fontWeight:400}),
-      ...card('Opção 01','Opção principal',261,true),...card('Opção 02','Ajuste secundário',344),...card('Opção 03','Outra configuração',427),
-      mk('button','Aplicar configurações',17,547,340,48,{text:'APLICAR CONFIGURAÇÕES',bg:'#be2c49',color:'#ffffff',radius:13,align:'center',fontSize:13,fontWeight:800})] },
-    {id:'texture',name:'Textura',icon:'▧',elements:[heading('Cabeçalho','TEXTURAS',50),sub('Escolha suas preferências visuais',103),...card('Textura 01','Textura padrão',174,true),...card('Textura 02','Textura alternativa',258),mk('button','Aplicar textura',17,365,340,48,{text:'APLICAR TEXTURA',align:'center',bg:'#be2c49',color:'#fff',fontWeight:800})]},
-    {id:'bet',name:'Apostado',icon:'◈',elements:[heading('Cabeçalho','APOSTADO',50),sub('Controles da categoria',103),...card('Opção 01','Configuração A',174),...card('Opção 02','Configuração B',258,true),mk('button','Aplicar',17,365,340,48,{text:'APLICAR ALTERAÇÕES',bg:'#be2c49',color:'#fff',align:'center',fontWeight:800})]},
-    {id:'license',name:'Key',icon:'◇',elements:[heading('Cabeçalho','ATIVAÇÃO',50),sub('Acesso ao Satanabe External',103),mk('card','Cartão da licença',17,165,340,178,{bg:'#251720',radius:17,border:1,borderColor:'#573040'}),mk('text','Texto da key',34,190,310,26,{text:'Insira sua licença',fontSize:16,fontWeight:800}),mk('input','Campo da key',34,232,306,44,{text:'SUA KEY AQUI',color:'#c9a8b7',bg:'#140d13',fontSize:12,radius:10,border:1,borderColor:'#724459'}),mk('button','Validar key',34,290,306,42,{text:'VALIDAR KEY',bg:'#be2c49',color:'#fff',align:'center',fontSize:13,fontWeight:800})]}
-  ],assets:[]};
+  const header=(title)=>[
+    mk('card','Cabeçalho da marca',7,6,359,82,{nativeRole:'brandHeader',bg:'#0e0d12',radius:16,opacity:100}),
+    text('SATANABE','SATANABE',21,18,222,28,{nativeRole:'brandTitle',fontSize:19,fontWeight:900}),
+    text('EXTERNAL','E X T E R N A L',21,48,216,20,{fontSize:10,color:t.accent,fontWeight:800}),
+    mk('icon','Alternar tema',281,25,32,35,{text:'☼',fontSize:23,color:t.text}),
+    mk('icon','Fechar',329,25,28,35,{text:'×',fontSize:23,color:t.text})
+  ];
+  const category=(title,desc)=>[
+    mk('card','Cabeçalho da categoria',103,108,258,71,{nativeRole:'categoryCard',bg:t.surface,radius:17,border:1,borderColor:'#362a32'}),
+    text('Título da aba',title,153,119,196,30,{nativeRole:'categoryTitle',fontSize:19,fontWeight:800}),
+    text('Subtítulo da aba',desc,153,149,196,20,{fontSize:10,color:t.secondary,fontWeight:500}),
+    text('Catálogo online','●  Catálogo online',111,197,210,24,{fontSize:10,color:t.secondary,fontWeight:500})
+  ];
+  return {version:1,sourceVersion:'Satanabe External 2.0.7',title:'Satanabe External 2.0.7',theme:t,
+    native:{sidebarWidth:82,sidebarTabHeight:81,sidebarCornerRadius:16,patchCardVerticalPadding:13,patchCardHorizontalPadding:10,toggleScale:0.81},
+    pages:[
+      {id:'ranked',name:'Rankeada',icon:'✦',elements:[...header(),...category('Rankeada','Patches disponíveis'),...card('Patch demonstrativo 1',248,'Descrição vinda do Admin'),...card('Patch demonstrativo 2',351,'Exemplo visual sem patch real'),...card('Patch demonstrativo 3',454,'Switch ligado pela API no app')]},
+      {id:'bet',name:'Apostado',icon:'◈',elements:[...header(),...category('Apostado','Patches disponíveis'),...card('Patch apostado 1',248,'Categoria apostado da API'),...card('Patch apostado 2',351,'Descrição cadastrada no Admin')]},
+      {id:'skin',name:'Skins',icon:'▧',elements:[...header(),...category('Skins','Patches disponíveis'),...card('Patch de skin 1',248,'Categoria skins / textura'),...card('Patch de skin 2',351,'Controlado pelo mesmo catálogo')]},
+      {id:'profile',name:'Perfil',icon:'♙',elements:[...header(),...category('Perfil','Informações da sua sessão'),
+        mk('card','Cartão do perfil',105,204,254,85,{bg:t.surface,radius:16,border:1,borderColor:'#322932'}),
+        text('Tempo restante','Tempo restante da key',117,217,230,20,{fontSize:12}),
+        text('Exemplo de tempo','7d 12h 30m',117,242,229,23,{fontSize:11,color:t.secondary}),
+        mk('card','Cartão de dispositivo',105,303,254,85,{bg:t.surface,radius:16,border:1,borderColor:'#322932'}),
+        text('Dispositivo','Dispositivo / Sistema iOS',117,316,230,20,{fontSize:12}),
+        text('Exemplo do dispositivo','iPhone • iOS',117,341,229,23,{fontSize:11,color:t.secondary})]}
+    ],assets:[]};
 };
+const defaultExternalModel=()=>initModel();
+function resetToExternal207(){
+  if(!window.confirm('Carregar a base visual do Satanabe External 2.0.7? O projeto aberto será substituído. Exporte um backup JSON antes, se quiser preservá-lo.'))return;
+  transact(()=>{model=defaultExternalModel();screenId='ranked';selectedId=null;});
+  notify('Base do External 2.0.7 carregada; categorias preservadas.');
+}
+
 let model=initModel(),screenId=model.pages[0].id,selectedId=null,history=[],future=[],editing=false,zoom=1,showPreview=false,importedDesignSystem='',pendingAi=null,saveTimer=null,toastTimer=null;
 const page=()=>model.pages.find(p=>p.id===screenId)||model.pages[0];
 const selected=()=>page().elements.find(e=>e.id===selectedId)||null;
@@ -50,7 +70,7 @@ async function dbLoad(){const db=await dbOpen();return new Promise((resolve,reje
 async function saveModel(loud=true){clearTimeout(saveTimer);try{await dbStore(model);$('#saveState').textContent='Salvo automaticamente';if(loud)notify('Projeto salvo neste aparelho ✓');}catch(e){try{localStorage.setItem('satanabe-studio-project',JSON.stringify(model));$('#saveState').textContent='Salvo localmente';if(loud)notify('Projeto salvo');}catch(e2){$('#saveState').textContent='Armazenamento cheio';notify('Espaço insuficiente. Exporte o projeto JSON para guardar.');}}}
 async function loadModel(){try{const stored=await dbLoad()||JSON.parse(localStorage.getItem('satanabe-studio-project')||'null');if(stored&&validModel(stored)){model=stored;screenId=model.pages[0].id;}}catch(err){try{const stored=JSON.parse(localStorage.getItem('satanabe-studio-project')||'null');if(validModel(stored)){model=stored;screenId=model.pages[0].id;}}catch(_){}}render();document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js-ready');}
 function validModel(m){return !!(m&&m.version===1&&typeof m.title==='string'&&Array.isArray(m.pages)&&m.pages.length&&m.pages.length<40&&m.pages.every(p=>typeof p.name==='string'&&Array.isArray(p.elements)&&p.elements.length<500)&&Array.isArray(m.assets)&&m.assets.length<300&&m.theme);}
-function render(){renderScreens();renderLayers();renderCanvas();renderProps();renderGallery();renderTheme();updateUndo();$('#crumbName').textContent=model.title;$('#nodeCount').textContent=page().elements.length;$('#currentScreen').textContent=page().name;}
+function render(){renderScreens();renderLayers();renderCanvas();renderProps();renderGallery();renderTheme();renderNativeMetrics();updateUndo();$('#crumbName').textContent=model.title;$('#nodeCount').textContent=page().elements.length;$('#currentScreen').textContent=page().name;}
 function renderScreens(){const root=$('#screens');root.replaceChildren();for(const p of model.pages){const b=document.createElement('button');b.className='screen-pill'+(screenId===p.id?' active':'');b.textContent=p.name;b.addEventListener('click',()=>{screenId=p.id;selectedId=null;render();});root.append(b);}}
 function layerGlyph(type){return ({text:'T',button:'▣',card:'▢',switch:'⏼',image:'▧',icon:'✧',input:'▤'}[type]||'▢');}
 function renderLayers(){const list=$('#layersList');list.replaceChildren();for(const e of [...page().elements].reverse()){const row=document.createElement('div');row.className='layer-row'+(selectedId===e.id?' selected':'');row.innerHTML=`<span class="layer-icon">${layerGlyph(e.type)}</span><span class="layer-name">${esc(e.name)}</span>`;const b=document.createElement('button');b.className='layer-eye'+(e.visible===false?' is-hidden':'');b.textContent=e.visible===false?'◌':'◉';b.title='Mostrar ou ocultar';b.onclick=(event)=>{event.stopPropagation();transact(()=>e.visible=!e.visible);};row.onclick=()=>selectNode(e.id);row.append(b);list.append(row);}}
@@ -118,6 +138,25 @@ function renderProps(){const e=selected(),root=$('#propertyFields');$('#property
   for(const [label,key] of [['Visível','visible'],['Bloquear movimento','locked']]){const row=document.createElement('label');row.className='prop-switch-row';row.textContent=label;const ck=document.createElement('input');ck.type='checkbox';ck.checked=e[key]!==false; if(key==='locked')ck.checked=!!e.locked;ck.onchange=()=>transact(()=>e[key]=ck.checked);row.append(ck);root.append(row);}
 }
 function renderGallery(){const grid=$('#assetsGrid');grid.replaceChildren();for(const a of model.assets){const b=document.createElement('button');b.className='asset-card';const img=document.createElement('img');img.src=a.data;img.alt=a.name;const cap=document.createElement('span');cap.textContent=a.name;b.append(img,cap);b.title='Adicionar imagem à tela';b.onclick=()=>{addElement('image',{assetId:a.id,name:a.name});openMobile('props');};grid.append(b);}if(!model.assets.length){const hint=document.createElement('p');hint.className='help-mini';hint.textContent='Sua galeria está vazia. Toque em “Adicionar imagem” para importar da biblioteca do iPhone.';grid.append(hint);}}
+const nativeMetricFields=[
+ ['sidebarWidth','Largura da barra lateral',65,112,1],
+ ['sidebarTabHeight','Altura das abas',50,110,1],
+ ['sidebarCornerRadius','Arredondamento das abas',0,35,1],
+ ['patchCardVerticalPadding','Espaçamento vertical do patch',4,28,1],
+ ['patchCardHorizontalPadding','Espaçamento horizontal do patch',4,28,1],
+ ['toggleScale','Escala do toggle',0.55,1.2,0.05]
+];
+function renderNativeMetrics(){
+ const root=$('#nativeMetrics');if(!root)return;
+ const defaults={sidebarWidth:82,sidebarTabHeight:81,sidebarCornerRadius:16,patchCardVerticalPadding:13,patchCardHorizontalPadding:10,toggleScale:0.81};
+ model.native={...defaults,...(model.native||{})};root.replaceChildren();
+ for(const [key,label,min,max,step] of nativeMetricFields){
+   const wrap=document.createElement('label');wrap.className='native-metric';const t=document.createElement('span');t.textContent=label;
+   const input=document.createElement('input');input.type='number';input.min=min;input.max=max;input.step=step;input.value=model.native[key];
+   input.addEventListener('change',()=>transact(()=>model.native[key]=bound(input.value,min,max)));
+   wrap.append(t,input);root.append(wrap);
+ }
+}
 function renderTheme(){const root=$('#themeSettings');root.replaceChildren();for(const [key,label] of [['bg','Cor do fundo'],['accent','Cor de destaque'],['text','Cor do texto'],['surface','Cor dos cartões'],['secondary','Texto secundário']]){const box=document.createElement('div');const l=document.createElement('label');l.className='field-label';l.textContent=label.toUpperCase();const row=document.createElement('div');row.className='prop-color';const input=document.createElement('input');input.type='color';input.value=model.theme[key];const code=document.createElement('code');code.textContent=model.theme[key];input.addEventListener('input',()=>code.textContent=input.value);input.addEventListener('change',()=>transact(()=>model.theme[key]=input.value));row.append(input,code);box.append(l,row);root.append(box);}}
 function addElement(type,ext={}){const count=page().elements.length;const left=40+((count%5)*9),top=180+((count%4)*18);const schema={text:mk('text','Novo texto',left,top,260,38,{text:'Seu texto aqui',fontSize:20,fontWeight:800}),button:mk('button','Novo botão',left,top,283,47,{text:'NOVO BOTÃO',bg:model.theme.accent,align:'center',color:'#ffffff',fontWeight:800}),card:mk('card','Novo cartão',left,top,288,80,{bg:model.theme.surface,border:1,borderColor:'#623645'}),switch:mk('switch','Novo switch',left,top,44,27,{on:true,bg:model.theme.accent}),image:mk('image','Nova imagem',left,top,160,125,{radius:13}),icon:mk('icon','Novo ícone',left,top,42,42,{text:'✦',fontSize:30,color:model.theme.accent}),input:mk('input','Novo campo',left,top,281,44,{text:'Digite aqui',bg:model.theme.surface,color:model.theme.secondary,border:1,borderColor:'#5c3a4c'})};const obj={...schema[type],...ext};transact(()=>{page().elements.push(obj);selectedId=obj.id;});hideModal('addModal');if(innerWidth<=740)openMobile('props');}
 function arrangeSelected(direction){const e=selected();if(!e)return;const arr=page().elements,index=arr.findIndex(x=>x.id===e.id),to=direction==='up'?index+1:index-1;if(to<0||to>=arr.length)return;transact(()=>{arr.splice(index,1);arr.splice(to,0,e);});}
@@ -152,7 +191,48 @@ const integrationGuide=()=>`SATANABE UI STUDIO — PACOTE DE EXPORTAÇÃO
 
 IMPORTANTE: Esta é uma interface SwiftUI nova que replica as telas criadas no editor, não um patch automático da UI de um binário existente.
 `;
-async function exportPack(){try{const items=[{name:'SatanabeGeneratedUI.swift',bytes:utf8(swiftCode())},{name:fname(model.title)+'.studio.json',bytes:utf8(JSON.stringify(model,null,2))},{name:'LEIA_PRIMEIRO.txt',bytes:utf8(integrationGuide())}];for(const asset of model.assets){const base64=asset.data.split(',')[1];if(!base64)continue;const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);items.push({name:'Assets/studio_'+asset.id+'.png',bytes});}downloadBlob('Satanabe_UI_Export.zip',binaryZip(items));}catch(err){notify('Não foi possível gerar o ZIP: '+err.message);}}
+function nativeThemeObject(){
+  const refs={};for(const p of model.pages){for(const e of p.elements){if(e.nativeRole&&!refs[e.nativeRole])refs[e.nativeRole]=e;}}
+  const read=(role,key,defaultValue)=>refs[role]?.[key]??defaultValue;
+  const validColor=c=>/^#[0-9a-f]{6}$/i.test(c||'')?c:'#ffffff';
+  const current=model.theme;
+  const dark={background:validColor(current.bg),card:validColor(current.surface),tile:'#1a1a1c',primary:validColor(current.text),secondary:validColor(current.secondary),accent:validColor(current.accent),border:'#ffffff',selected:'#3d0b13'};
+  const light={background:'#f7f7fa',card:'#ffffff',tile:'#f9f9fc',primary:'#141417',secondary:'#70717d',accent:validColor(current.accent),border:'#000000',selected:'#ffedf0'};
+  const categories={};
+  for(const pg of model.pages){
+    if(!['ranked','bet','skin','profile'].includes(pg.id))continue;
+    const role=r=>pg.elements.find(e=>e.nativeRole===r);
+    const patch=role('patchCard'),title=role('patchTitle'),description=role('patchDescription'),header=role('categoryCard'),categoryTitle=role('categoryTitle'),toggle=role('patchSwitch');
+    categories[pg.id]={
+      accent:validColor(toggle?.bg||current.accent),
+      patchCardColor:validColor(patch?.bg||current.surface),
+      patchTitleColor:validColor(title?.color||current.text),
+      patchDescriptionColor:validColor(description?.color||current.secondary),
+      categoryCardColor:validColor(header?.bg||current.surface),
+      categoryTitleColor:validColor(categoryTitle?.color||current.text),
+      metrics:{
+        patchCornerRadius:bound(patch?.radius??16,0,44),
+        patchTitleFontSize:bound(title?.fontSize??13,7,28),
+        patchDescriptionFontSize:bound(description?.fontSize??10,7,24),
+        patchBorderWidth:bound(patch?.border??0.8,0,5),
+        categoryCornerRadius:bound(header?.radius??17,0,44),
+        categoryTitleFontSize:bound(categoryTitle?.fontSize??19,10,35)
+      }
+    };
+  }
+  return {schema:1,app:'Satanabe External 2.0.7',dark,light,categories,
+    metrics:{...model.native,
+      brandTitleFontSize:bound(read('brandTitle','fontSize',19),10,35),
+      categoryTitleFontSize:bound(read('categoryTitle','fontSize',19),10,35),
+      categoryCornerRadius:bound(read('categoryCard','radius',17),0,44),
+      patchCornerRadius:bound(read('patchCard','radius',16),0,44),
+      patchTitleFontSize:bound(read('patchTitle','fontSize',13),7,28),
+      patchDescriptionFontSize:bound(read('patchDescription','fontSize',10),7,24),
+      patchBorderWidth:bound(read('patchCard','border',0.8),0,5)},
+    note:'Apenas apresentação. As categorias e a API continuam governadas pelo código do aplicativo.'};
+}
+function exportNativeTheme(){download('SatanabeUITheme.json',JSON.stringify(nativeThemeObject(),null,2));notify('Tema real do External exportado ✓');}
+async function exportPack(){try{const items=[{name:'SatanabeGeneratedUI.swift',bytes:utf8(swiftCode())},{name:'SatanabeUITheme.json',bytes:utf8(JSON.stringify(nativeThemeObject(),null,2))},{name:fname(model.title)+'.studio.json',bytes:utf8(JSON.stringify(model,null,2))},{name:'LEIA_PRIMEIRO.txt',bytes:utf8(integrationGuide())}];for(const asset of model.assets){const base64=asset.data.split(',')[1];if(!base64)continue;const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);items.push({name:'Assets/studio_'+asset.id+'.png',bytes});}downloadBlob('Satanabe_UI_Export.zip',binaryZip(items));}catch(err){notify('Não foi possível gerar o ZIP: '+err.message);}}
 
 async function importProject(file){try{if(file.size>25*1024*1024)throw Error('Projeto muito grande');const data=JSON.parse(await file.text());if(!validModel(data))throw Error('JSON não é um projeto do Studio válido');checkpoint();model=data;screenId=data.pages[0].id;selectedId=null;render();markSave();notify('Projeto importado com sucesso');}catch(err){notify('Erro na importação: '+err.message);}}
 function newScreen(){const input=$('#screenNameInput');const name=input.value.trim();if(!name)return notify('Informe o nome da tela');if(model.pages.length>=12)return notify('Limite de 12 telas');const pg={id:ID(),name:name.slice(0,25),icon:'▤',elements:[]};transact(()=>{model.pages.push(pg);screenId=pg.id;selectedId=null;});input.value='';hideModal('screenModal');}
@@ -221,7 +301,7 @@ function bind(){setupCatalog();$('#undoBtn').onclick=undo;$('#redoBtn').onclick=
   $('#toggleLeft').onclick=()=>$('.sidebar').classList.toggle('open');
   $('#uploadAssetBtn').onclick=()=>$('#assetFile').click();$('#assetFile').onchange=async e=>{await importAssets([...e.target.files]);e.target.value='';};
   $('#importProject').onclick=()=>$('#projectFile').click();$('#projectFile').onchange=async e=>{const f=e.target.files[0];if(f)await importProject(f);e.target.value='';};
-  $('#exportPack').onclick=exportPack;$('#exportJson').onclick=exportJson;$('#exportSwift').onclick=exportSwift;$('#exportTheme').onclick=exportTheme;$('#importSwiftTheme').onclick=()=>$('#swiftFile').click();$('#swiftFile').onchange=async e=>{const f=e.target.files[0];if(f)await loadDesignSystem(f);e.target.value='';};
+  $('#exportNative').onclick=exportNativeTheme;$('#loadExternalPreset').onclick=resetToExternal207;$('#exportPack').onclick=exportPack;$('#exportJson').onclick=exportJson;$('#exportSwift').onclick=exportSwift;$('#exportTheme').onclick=exportTheme;$('#importSwiftTheme').onclick=()=>$('#swiftFile').click();$('#swiftFile').onchange=async e=>{const f=e.target.files[0];if(f)await loadDesignSystem(f);e.target.value='';};
   $$('.preset').forEach(b=>b.onclick=()=>transact(()=>model.theme=deep(presets[b.dataset.preset])));
   $('#aiSend').onclick=askAi;
   $$('[data-close]').forEach(x=>x.onclick=()=>hideModal(x.dataset.close));$$('.modal-overlay').forEach(x=>x.onclick=e=>{if(e.target===x)x.classList.add('hidden');});

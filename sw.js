@@ -1,4 +1,4 @@
-const CACHE='satanabe-ui-studio-v5-mobile-preview';
+const CACHE='satanabe-ui-studio-v207-mobile-preview';
 const FILES=['./','./index.html','./style.css','./app.js','./assets/icon.svg','./assets/apple-touch-icon.png','./assets/icon-192.png','./manifest.webmanifest'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

@@ -1,15 +1,6 @@
-SATANABE UI STUDIO V1.2 — NOTA IMPORTANTE
+SITE-EDITOR PARA GITHUB + VERCEL (EXTERNAL 2.0.7)
 
-O visualizador do aplicativo Arquivos (Quick Look) do iPhone pode NÃO executar JavaScript.
-Se você abrir o arquivo HTML por ali, verá apenas uma PRÉVIA ESTÁTICA.
-Isso NÃO é o editor funcionando.
-
-PARA USAR O EDITOR:
-1. Descompacte este ZIP no iPhone.
-2. Envie TODOS os arquivos e pastas para um repositório GitHub (na raiz).
-3. Importe esse repositório em https://vercel.com/new (Framework: Other).
-4. Abra a URL HTTPS .vercel.app no Safari.
-5. Confira que a prévia mostra os botões e que o botão + adiciona componentes.
-
-A versão HTML de teste é só para diagnóstico e pode não executar no app Arquivos.
-A ferramenta exporta SwiftUI/JSON, não edita automaticamente uma IPA compilada.
+O editor possui Rankeada, Apostado, Skins e Perfil, prévia por toque, camadas, galeria e edição visual.
+Para usar com o External real, exporte 'Tema External 2.0.7' e substitua 'ThreeOneOSFive/SatanabeUITheme.json' no projeto-fonte iOS preparado em pacote separado.
+Não edita a IPA instalada e não remapeia os patches: eles continuam recebidos do Admin pela API.
+Alterações de posições livres, elementos/ícones adicionados ou imagens do canvas são apenas visuais até serem ligadas manualmente aos componentes SwiftUI.
