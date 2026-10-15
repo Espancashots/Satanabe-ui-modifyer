@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"/>
+<meta name="theme-color" content="#0b090d"/><meta name="robots" content="noindex,nofollow"/>
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png"/><meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Satanabe Studio"/>
+<title>Satanabe UI Studio — Editor visual v1.2</title>
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="stylesheet" href="style.css?v=5"/>
+</head>
+<body>
+<noscript><div style="position:fixed;inset:12px;z-index:99999;background:#1c1119;color:#fff;border:2px solid #c63a56;border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:14px;justify-content:center;text-align:center;font:16px -apple-system, sans-serif"><strong style="font-size:23px">Este visualizador não executa JavaScript</strong><p>O visualizador do aplicativo Arquivos pode mostrar a interface vazia. O editor precisa abrir como site no Safari. Publique os arquivos na Vercel e abra o link HTTPS.</p><p style="color:#ee7b92">Não é um defeito do layout do projeto.</p></div></noscript>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">S<span>↗</span></div><div><strong>SATANABE</strong><small>UI STUDIO <span class="brand-version">BETA 1.1</span></small></div></div>
+    <div class="section-title">WORKSPACE</div>
+    <nav class="side-nav" aria-label="Ferramentas">
+      <button class="nav-item active" data-panel="layers"><span class="nav-icon">▤</span> Editor <span class="nav-meta">01</span></button>
+      <button class="nav-item" data-panel="gallery"><span class="nav-icon">▧</span> Galeria</button>
+      <button class="nav-item" data-panel="themes"><span class="nav-icon">◈</span> Aparência</button>
+      <button class="nav-item" data-panel="ai"><span class="nav-icon">✦</span> IA Assistente <span class="small-tag">OPCIONAL</span></button>
+    </nav>
+    <div class="section-title second-title">ARQUIVO</div>
+    <nav class="side-nav">
+      <button class="nav-item" id="importProject"><span class="nav-icon">↥</span> Importar projeto</button>
+      <button class="nav-item" id="openExport"><span class="nav-icon">↧</span> Exportar arquivos</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="status-led"></div><div><strong>Salvo neste aparelho</strong><span id="saveState">Pronto para editar</span></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left"><button class="icon-btn mobile-menu" id="toggleLeft" aria-label="Abrir menu">☰</button><div class="breadcrumb">PROJETOS <span>/</span> <strong id="crumbName">Satanabe External</strong></div></div>
+      <div class="top-actions">
+        <button class="icon-btn" id="undoBtn" title="Desfazer" aria-label="Desfazer">↶</button>
+        <button class="icon-btn" id="redoBtn" title="Refazer" aria-label="Refazer">↷</button>
+        <span class="top-separator"></span><button class="plain-btn" id="saveBtn"><span>◇</span> <span class="save-label">Salvar</span></button>
+        <button class="primary-btn" id="exportBtn">Exportar <span>↗</span></button>
+      </div>
+    </header>
+    <div class="workspace-header"><div><div class="eyebrow">VISUAL EDITOR <span class="dot-sep">•</span> iOS / SWIFTUI</div><h1>Seu layout. Suas regras.</h1><p>Toque em qualquer elemento para editar. Arraste para mover.</p></div><button id="previewToggle" class="outline-btn">◉ <span id="previewLabel">Prévia</span></button></div>
+    <div class="editor-shell">
+      <section class="leftpanel" id="leftpanel">
+        <div class="panel-view" data-view="layers">
+          <div class="panel-heading"><div><h2>Camadas</h2><p>Componentes da tela</p></div><button class="mini-btn" id="addScreenBtn" title="Nova tela">＋</button></div>
+          <div class="screen-tabs" id="screens"></div>
+          <div class="panel-label-row"><span>ELEMENTOS</span><button id="addElementQuick" class="text-action">+ Adicionar</button></div>
+          <div class="layers-list" id="layersList"></div>
+          <div class="help-mini">Dica: mantenha pressionado e arraste um elemento no celular para reposicioná-lo.</div>
+        </div>
+        <div class="panel-view hidden" data-view="gallery"><div class="panel-heading"><div><h2>Galeria</h2><p>Imagens do seu iPhone</p></div></div><button class="upload-card" id="uploadAssetBtn"><strong>＋ Adicionar imagem</strong><span>PNG, JPG, WEBP, GIF</span></button><div class="assets-grid" id="assetsGrid"></div><p class="help-mini">Selecione uma imagem para adicioná-la à tela. As imagens ficam armazenadas localmente no projeto.</p></div>
+        <div class="panel-view hidden" data-view="themes"><div class="panel-heading"><div><h2>Aparência</h2><p>Cores globais da interface</p></div></div><div id="themeSettings"></div><div class="theme-preset-label">TEMAS PRONTOS</div><div class="theme-presets"><button class="preset" data-preset="wine"><span class="preset-dot wine"></span> Satanabe Vinho</button><button class="preset" data-preset="ocean"><span class="preset-dot ocean"></span> Azul Noturno</button><button class="preset" data-preset="light"><span class="preset-dot light"></span> Claro Premium</button></div></div>
+        <div class="panel-view hidden" data-view="ai"><div class="panel-heading"><div><h2>IA Assistente</h2><p>Ajustes pequenos e opcionais</p></div></div><div class="ai-spark">✦</div><p class="ai-explain">Selecione um componente e descreva o ajuste. A IA sugere mudanças — <b>você decide se aplica.</b></p><label class="field-label" for="aiPrompt">PEDIDO</label><textarea id="aiPrompt" rows="4" placeholder="Ex.: Deixe o botão mais compacto, com cantos arredondados e vermelho vinho."></textarea><label class="field-label" for="aiCode">CÓDIGO DE ACESSO (SE CONFIGURADO)</label><input id="aiCode" type="password" placeholder="Opcional" autocomplete="off"/><button class="primary-btn full" id="aiSend">✦ Sugerir alteração</button><div class="ai-result" id="aiResult"></div><div class="help-mini">Requer endpoint /api/assist com GROQ_API_KEY configurada no servidor. Nunca insira sua chave Groq nesta página.</div></div>
+      </section>
+      <section class="canvas-area" id="canvasArea">
+        <div class="canvas-toolbar"><div class="toolbar-label"><span class="live-circle"></span> CANVAS <span class="toolbar-divider">/</span> <b id="currentScreen">Rankeada</b></div><div class="canvas-tools"><button class="tool-btn" id="zoomOut" title="Diminuir zoom">−</button><span id="zoomLabel">100%</span><button class="tool-btn" id="zoomIn" title="Aumentar zoom">＋</button><button class="tool-btn fit-btn" id="fitBtn" title="Ajustar tela">⤢</button></div></div>
+        <div class="canvas-center" id="canvasCenter"><div class="offline-alert" id="offlineAlert" role="status"><strong>Prévia estática</strong><span>Este visualizador não executou o editor. Para tocar, arrastar e editar, publique o ZIP na Vercel e abra o endereço HTTPS no Safari.</span></div><div id="phoneScaler"><div class="phone-frame" id="phoneFrame"><div class="phone-island"></div><div class="phone-status"><span>9:41</span><span>◕ ▰</span></div><div class="phone-screen" id="phoneScreen"><div class="phone-bg-glow"></div><div class="device-elements" id="deviceElements"><div class="offline-elements" aria-label="Exemplo estático da interface Satanabe">
+  <div class="fallback-brand">S A T A N A B E</div>
+  <div class="fallback-heading">RANKEADA</div>
+  <div class="fallback-sub">Personalize sua experiência</div>
+  <div class="fallback-info"><span>✧</span><div><strong>Painel de ajustes</strong><small>Configurações da partida</small></div></div>
+  <div class="fallback-card"><div><strong>Opção principal</strong><small>Toque para configurar</small></div><i class="on"></i></div>
+  <div class="fallback-card"><div><strong>Ajuste secundário</strong><small>Toque para configurar</small></div><i></i></div>
+  <div class="fallback-card"><div><strong>Outra configuração</strong><small>Toque para configurar</small></div><i></i></div>
+  <div class="fallback-button">APLICAR CONFIGURAÇÕES</div>
+</div></div></div><div class="phone-bottom-nav" id="phoneNav"><div class="fallback-nav"><span>✦<small>Rankeada</small></span><span>▧<small>Textura</small></span><span>◈<small>Apostado</small></span><span>◇<small>Key</small></span></div></div><div class="home-indicator"></div></div></div></div>
+        <div class="canvas-footer"><div>✦ Edição ao vivo <span class="footer-divide">·</span> iPhone 390 × 844</div><div><span id="nodeCount">0</span> elementos <span class="footer-divide">·</span> SwiftUI</div></div>
+      </section>
+      <section class="rightpanel" id="rightpanel"><div class="property-header"><div><h2>Propriedades</h2><p id="propertySubtitle">Selecione um elemento</p></div><button class="icon-btn mobile-close" id="closeProps" aria-label="Fechar propriedades">✕</button></div><div class="property-scroll" id="propertyFields"><div class="no-selection"><div>⌗</div><strong>Nenhum elemento selecionado</strong><span>Toque em um componente da tela ou selecione uma camada.</span></div></div><div class="property-bottom"><button id="downBtn" class="property-action order-btn" title="Enviar para trás">↓</button><button id="upBtn" class="property-action order-btn" title="Trazer para frente">↑</button><button id="duplicateBtn" class="property-action">▢ Duplicar</button><button id="deleteBtn" class="property-action danger">♲ Excluir</button></div></section>
+    </div>
+    <div class="mobile-bottom"><button data-mobile-tab="layers" class="mobile-tab active">▤<span>Camadas</span></button><button data-mobile-tab="gallery" class="mobile-tab">▧<span>Galeria</span></button><button data-mobile-tab="themes" class="mobile-tab">◈<span>Tema</span></button><button data-mobile-tab="props" class="mobile-tab">☷<span>Editar</span></button><button data-mobile-tab="ai" class="mobile-tab">✦<span>IA</span></button></div>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div class="modal-overlay hidden" id="addModal"><div class="dialog"><div class="dialog-heading"><div><span class="eyebrow">NOVO COMPONENTE</span><h2>Adicionar à tela</h2></div><button data-close="addModal" class="icon-btn">✕</button></div><div class="element-catalog" id="elementCatalog"></div></div></div>
+<div class="modal-overlay hidden" id="exportModal"><div class="dialog dialog-export"><div class="dialog-heading"><div><span class="eyebrow">EXPORTAÇÃO</span><h2>Leve seu design para o app</h2></div><button data-close="exportModal" class="icon-btn">✕</button></div><p class="dialog-description">O JSON preserva o projeto editável. O arquivo Swift gera uma interface SwiftUI. Também é possível editar as constantes do DesignSystem.swift original.</p><div class="export-grid"><button class="export-choice" id="exportPack"><span>▣</span><strong>Pacote completo .zip</strong><small>SwiftUI, JSON, imagens e instruções</small></button><button class="export-choice" id="exportJson"><span>◇</span><strong>Projeto .json</strong><small>Para reabrir e continuar a edição</small></button><button class="export-choice" id="exportSwift"><span>⌘</span><strong>Telas .swift</strong><small>Componentes SwiftUI gerados</small></button><button class="export-choice" id="exportTheme"><span>◈</span><strong>Tema .swift</strong><small>DesignSystem ajustado do 3105</small></button><button class="export-choice" id="importSwiftTheme"><span>↥</span><strong>Importar DesignSystem.swift</strong><small>Usar o original do seu projeto</small></button></div><div class="export-note">Importante: a exportação <b>não altera automaticamente a IPA</b>. A tela gerada precisa ser ligada às ações reais do External no projeto Xcode.</div></div></div>
+<div class="modal-overlay hidden" id="screenModal"><div class="dialog small-dialog"><div class="dialog-heading"><div><span class="eyebrow">NOVA TELA</span><h2>Nome da tela</h2></div><button data-close="screenModal" class="icon-btn">✕</button></div><input id="screenNameInput" maxlength="25" placeholder="Ex.: Configurações"/><button class="primary-btn full" id="createScreenConfirm">Criar tela</button></div></div>
+<input type="file" id="assetFile" accept="image/*" multiple hidden/><input type="file" id="projectFile" accept=".json,application/json" hidden/><input type="file" id="swiftFile" accept=".swift,text/plain" hidden/>
+<script src="app.js?v=5" defer></script>
+<script>if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){navigator.serviceWorker.register("./sw.js").catch(()=>{});}</script>
+</body>
+</html>

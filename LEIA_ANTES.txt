@@ -1,0 +1,15 @@
+SATANABE UI STUDIO V1.2 — NOTA IMPORTANTE
+
+O visualizador do aplicativo Arquivos (Quick Look) do iPhone pode NÃO executar JavaScript.
+Se você abrir o arquivo HTML por ali, verá apenas uma PRÉVIA ESTÁTICA.
+Isso NÃO é o editor funcionando.
+
+PARA USAR O EDITOR:
+1. Descompacte este ZIP no iPhone.
+2. Envie TODOS os arquivos e pastas para um repositório GitHub (na raiz).
+3. Importe esse repositório em https://vercel.com/new (Framework: Other).
+4. Abra a URL HTTPS .vercel.app no Safari.
+5. Confira que a prévia mostra os botões e que o botão + adiciona componentes.
+
+A versão HTML de teste é só para diagnóstico e pode não executar no app Arquivos.
+A ferramenta exporta SwiftUI/JSON, não edita automaticamente uma IPA compilada.
